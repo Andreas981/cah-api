@@ -1,0 +1,3 @@
+function randomString() {
+ return "test"; 
+}
