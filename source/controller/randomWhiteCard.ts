@@ -1,19 +1,31 @@
-/** source/controllers/posts.ts */
-import { Request, Response, NextFunction } from "express";
-import axios, { AxiosResponse } from "axios";
+import { Request, Response } from "express";
+import fs from "fs";
+import path from "path";
 
-interface RandomWhiteCard {
-  text: String;
-}
-
-// getting all posts
-const getPosts = async (req: Request, res: Response, next: NextFunction) => {
-  // get some posts
-  let lines: string[] = ["test0", "test1", "test2"];
-  let randomWhiteLine: String = lines[Math.floor(Math.random() * lines.length)];
-  return res.status(200).json({
-    randomWhiteLine,
-  });
+const getWhiteCard = async (req: Request, res: Response) => {
+  let line: string = await readRandomFromFile(
+    path.join(__dirname, "../files/CAHWhiteCards.txt")
+  );
+  console.log(line);
+  return res.set("Content-Type", "text/plain").status(200).send(line);
 };
 
-export default { getPosts };
+const getBlackCard = async (req: Request, res: Response) => {
+  let line: string = await readRandomFromFile(
+    path.join(__dirname, "../files/CAHBlackCards.txt")
+  );
+  console.log(line);
+  return res.set("Content-Type", "text/plain").status(200).send(line);
+};
+
+const readRandomFromFile = async (path: string) => {
+  return await fs.promises
+    .readFile(path)
+    .then((data) => data.toString())
+    .then(
+      (str) =>
+        str.split("\n")[Math.floor(Math.random() * str.split("\n").length)]
+    );
+};
+
+export default { getWhiteCard, getBlackCard };

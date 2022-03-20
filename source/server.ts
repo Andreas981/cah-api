@@ -2,16 +2,18 @@
 import http from "http";
 import express, { Express } from "express";
 import morgan from "morgan";
-import routes from "./routes/randomWhiteCard";
+import routes, { route } from "./routes/routes";
+import bodyParser from "body-parser";
 
 const router: Express = express();
 
+router.use(bodyParser.text());
 /** Logging */
 router.use(morgan("dev"));
 /** Parse the request */
 router.use(express.urlencoded({ extended: false }));
 /** Takes care of JSON data */
-router.use(express.json());
+router.use(express.raw());
 
 /** RULES OF OUR API */
 router.use((req, res, next) => {
@@ -25,7 +27,7 @@ router.use((req, res, next) => {
   // set the CORS method headers
   if (req.method === "OPTIONS") {
     res.header("Access-Control-Allow-Methods", "GET");
-    return res.status(200).json({});
+    return res.status(200).send();
   }
   next();
 });
