@@ -1,3 +1,0 @@
-function randomString() {
- return "test"; 
-}
